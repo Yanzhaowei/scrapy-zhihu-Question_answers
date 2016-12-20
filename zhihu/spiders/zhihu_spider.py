@@ -3,24 +3,22 @@
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
-from scrapy.contrib.spiders import CrawlSpider, Rule
+from scrapy_redis.spiders import CrawlSpider
+from scrapy.contrib.spiders import Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
-from scrapy.selector import HtmlXPathSelector
-import re
 from bs4 import BeautifulSoup
 from zhihu.items import ZhihuItem
-
+from scrapy.dupefilters import RFPDupeFilter
 
 class ZhiHu(CrawlSpider):
     '''
-    继承自CrawlSpider，实现自动爬取
+    spider that reads urls from start_urls
     '''
 
     name = "zhihu"
-    allowed_domains = ["www.zhihu.com"]
+    allowed_domains = ['www.zhihu.com']
     start_urls = [
-        'https://www.zhihu.com/question/27621722'
+        "https://www.zhihu.com/question/51453506"
     ]
 
     # 定义next规则
@@ -34,8 +32,7 @@ class ZhiHu(CrawlSpider):
         soup = BeautifulSoup(response.body, "lxml")
 
         # 问题url
-        question_url = response.url
-        item["question_url"] = question_url
+        item["question_url"] = response.url
         # 提问问题的人
         item["question_author"] = "未知"
 
